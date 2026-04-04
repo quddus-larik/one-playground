@@ -29,11 +29,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-mono", jetbrainsMono.variable)}
+      className={cn("h-full", "antialiased", geistSans.variable, "font-mono", jetbrainsMono.variable)}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          
+          </Providers>
       </body>
     </html>
   );
