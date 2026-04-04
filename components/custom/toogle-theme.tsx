@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export function ToggleThemeButton() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -16,7 +16,7 @@ export function ToggleThemeButton() {
     return <Switch isDisabled>Theme: loading...</Switch>; // Or empty div/skeleton
   }
 
-  const isDark = theme === "dark";
+  const isDark = (resolvedTheme ?? theme) === "dark";
 
   return (
     <Switch 
@@ -26,7 +26,7 @@ export function ToggleThemeButton() {
       <Switch.Control>
         <Switch.Thumb />
       </Switch.Control>
-      Theme: {theme ?? "system"}
+      Theme: {resolvedTheme ?? theme ?? "system"}
     </Switch>
   );
 }
