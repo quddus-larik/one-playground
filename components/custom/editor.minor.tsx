@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import type { Monaco } from "@monaco-editor/react";
+import { useUserCode } from "@/stores/code.state";
 
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
@@ -40,14 +41,19 @@ interface CodeEditorInterface {
 }
 
 export function CodeEditor({ language = "javascript" }: CodeEditorInterface) {
+  const { userCode, setUserCode } = useUserCode();
+  const editorLanguage = language.toLowerCase() === "react" ? "javascript" : language;
+
   return (
     <div className="monaco-shell h-full w-full rounded-xl bg-background">
       <Editor
         height="100%"
         width="100%"
-        language={language}
+        language={editorLanguage}
         theme={PURPLE_THEME_ID}
         beforeMount={definePurpleTheme}
+        value={userCode}
+        onChange={(value) => setUserCode({ userCode: value ?? "" })}
         options={{
           minimap: { enabled: false },
           scrollBeyondLastLine: false,
@@ -58,10 +64,13 @@ export function CodeEditor({ language = "javascript" }: CodeEditorInterface) {
           glyphMargin: false,
           lineDecorationsWidth: 0,
           lineNumbersMinChars: 3,
-          suggest: {
-            showInlineDetails: false,
-            showStatusBar: false,
-          },
+          suggestOnTrigger: false,
+          quickSuggestions: false,
+          wordBasedSuggestions: "off",
+          inlineSuggest: { enabled: false },
+          parameterHints: { enabled: false },
+          acceptSuggestionOnEnter: "off",
+          tabCompletion: "off",
         }}
       />
     </div>
