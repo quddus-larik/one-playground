@@ -18,9 +18,9 @@ export function Header() {
         <Button isIconOnly variant="primary" onPress={() => handleRunCode()}>
           <PlayIcon weight="fill" />
         </Button>
-        <Button variant="secondary" className={"text-orange-500"} size="lg">
+        <Button variant="secondary" className={"text-orange-500 cursor-default"} size="lg">
           <WarningCircleIcon />
-          Beta Version
+          beta bersion
         </Button>
         </div>
       <ToggleThemeButton />

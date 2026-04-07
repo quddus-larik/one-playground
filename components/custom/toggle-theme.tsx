@@ -22,7 +22,7 @@ export function ToggleThemeButton() {
 
   return (
     <div className="flex gap-1">
-      <Button variant="secondary" isIconOnly size="lg">
+      <Button variant="secondary" isIconOnly size="lg" onClick={()=> window.open('https://github.com/quddus-larik/tiny-ground')}>
         <IoLogoGithub className="size-6" />
       </Button>
       <Button
