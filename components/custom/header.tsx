@@ -1,8 +1,9 @@
 import { Button } from "@heroui/react";
 import { ToggleThemeButton } from "./toggle-theme";
-import { PlayIcon } from "@phosphor-icons/react";
+import { PlayIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { CodeLanguageSelector } from "./selector.minor";
 import { TabsView } from "./tabs.minor";
+import { handleRunCode } from "@/lib/handlers/codeRunner";
 
 export function Header() {
   return (
@@ -11,10 +12,14 @@ export function Header() {
       <div className="flex gap-2 items-center">
         <CodeLanguageSelector />
         <TabsView />
-        <Button isIconOnly variant="primary">
+        <Button isIconOnly variant="primary" onPress={() => handleRunCode()}>
           <PlayIcon weight="fill" />
         </Button>
-      </div>
+        <Button variant="secondary" className={"text-orange-500"} size="lg">
+          <WarningCircleIcon />
+          Beta Version
+        </Button>
+        </div>
       <ToggleThemeButton />
     </div>
   );
