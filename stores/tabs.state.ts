@@ -1,16 +1,14 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-interface ViewerPayload {
-  viewerState: string | '';
-}
+type ViewerState = "code" | "output" | "both";
 
 type ViewerStateInterface = {
-  viewerState: string | '';
-  setViewerState: (payload: ViewerPayload) => void;
+  viewerState: ViewerState;
+  setViewerState: (viewerState: ViewerState) => void;
 };
 
 export const useViewer = create<ViewerStateInterface>((set) => ({
-  viewerState: 'both',  // Initial value
-  setViewerState: (payload) => set(payload),
+  viewerState: "both",
+  setViewerState: (viewerState) => set({ viewerState }),
 }));
 

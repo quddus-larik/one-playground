@@ -5,11 +5,11 @@ interface SelectedLanguagePayload {
 }
 
 type SelectedLanguageInterface = {
-  selectedLanguageState: string | 'javascript',
+  selectedLanguageState: string | 'react',
   setLanguageState: (payload: SelectedLanguagePayload) => void
 }
 
 export const useSelectedLanguage = create<SelectedLanguageInterface>((set)=>({
-  selectedLanguageState: 'javascript',
+  selectedLanguageState: 'react',
   setLanguageState: (payload) => set(payload)
 }));
