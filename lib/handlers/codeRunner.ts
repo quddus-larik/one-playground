@@ -8,7 +8,7 @@ interface RunCodeInterface {
   language?: string;
 }
 
-const HTML_LANGUAGES = new Set(["html", "react"]);
+const HTML_LANGUAGES = new Set(["html", "react", "vue"]);
 
 const buildHtmlShell = (body: string) => `<!doctype html>
 <html lang="en">

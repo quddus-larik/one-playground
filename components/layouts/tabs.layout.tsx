@@ -50,7 +50,9 @@ export function ViewerLayout() {
                 {selectedLanguageState || "javascript"}
               </Chip>
             </div>
-            <OutputViewer />
+            <div className="h-[calc(100%-32px)]">
+              <OutputViewer />
+            </div>
           </div>
         </div>
       ) : (
@@ -62,14 +64,16 @@ export function ViewerLayout() {
           )}
 
           {(isOutput || isBoth) && (
-            <div className="rounded-xl bg-foreground text-background">
+            <div className="h-full rounded-xl bg-foreground text-background">
               <div className="flex items-center justify-between rounded-t-xl bg-muted py-1 pl-2 pr-1 font-mono">
                 <span>Output</span>
                 <Chip className="rounded-lg font-bold">
                   {selectedLanguageState || "javascript"}
                 </Chip>
               </div>
-              <OutputViewer />
+              <div className="h-[calc(100%-32px)]">
+                <OutputViewer />
+              </div>
             </div>
           )}
         </div>
