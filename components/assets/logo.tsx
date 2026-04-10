@@ -33,9 +33,9 @@ export function TinyIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
           width="698.457"
           height="698.457"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -69,8 +69,8 @@ export function TinyIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
           y2="267.153"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#AD6FFF" />
-          <stop offset="1" stop-color="#923FFF" />
+          <stop stopColor="#AD6FFF" />
+          <stop offset="1" stopColor="#923FFF" />
         </linearGradient>
       </defs>
     </svg>
