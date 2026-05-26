@@ -6,8 +6,8 @@ import { useMemo, useState } from "react";
 import { useSelectedLanguage } from "@/stores/lang.state";
 import { useUserCode } from "@/stores/code.state";
 
-function normalizeSearch(value: string) {
-  return value
+function normalizeSearch(value: unknown) {
+  return String(value ?? "")
     .toLowerCase()
     .replace(/c\+\+/g, "cpp")
     .replace(/c#/g, "csharp")
