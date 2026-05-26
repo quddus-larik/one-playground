@@ -12,7 +12,13 @@ import { TinyIcon } from "../assets/logo";
 import { useStdinState } from "@/stores/stdin.state";
 
 export function Header() {
-  const { hasStdin, inputRequests } = useStdinState();
+  const { hasStdin, inputRequests, setInputRequestValue, setStdin } = useStdinState();
+
+  const runWithModalInputs = async () => {
+    const stdins = inputRequests.map((item) => item.input ?? "").join("\n");
+    setStdin(stdins);
+    await handleRunCode({ stdin: stdins });
+  };
 
   return (
     <div className="w-full py-2 px-4 flex items-center justify-between font-mono">
@@ -40,12 +46,14 @@ export function Header() {
                   <Modal.Body>
                     <div className="w-full flex flex-col gap-3 p-1">
                       {inputRequests.map((itm,idx) => (
-                        <div className="flex flex-col gap-1">
-                          <Label htmlFor={itm.title.replaceAll(" ","-").toLocaleLowerCase()}>{itm.title}</Label>
+                        <div key={`${itm.title}-${idx}`} className="flex flex-col gap-1">
+                          <Label htmlFor={`stdin-${idx}`}>{itm.title}</Label>
                           <Input
-                            id={itm.title.replaceAll(" ","-").toLocaleLowerCase()}
+                            id={`stdin-${idx}`}
                             placeholder="xyz"
-                            type="email"
+                            type="text"
+                            value={itm.input}
+                            onChange={(e) => setInputRequestValue(idx, e.target.value)}
                           />
                         </div>
                       ))}
@@ -55,7 +63,7 @@ export function Header() {
                     <Button slot="close" variant="secondary">
                       Discard
                     </Button>
-                    <Button slot="close" onPress={() => handleRunCode()}>
+                    <Button slot="close" onPress={runWithModalInputs}>
                       Run
                       <PlayIcon weight="duotone" />
                     </Button>
