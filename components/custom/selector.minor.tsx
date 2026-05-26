@@ -7,6 +7,7 @@ import { useSelectedLanguage } from "@/stores/lang.state";
 import { useUserCode } from "@/stores/code.state";
 import { useStdinState } from "@/stores/stdin.state";
 import { detectInputRequests } from "@/lib/utils/inputDetection";
+import { useOutput } from "@/stores/output.state";
 
 function normalizeSearch(value: unknown) {
   return String(value ?? "")
@@ -30,6 +31,7 @@ export function CodeLanguageSelector() {
   const { selectedLanguageState, setLanguageState } = useSelectedLanguage();
   const { userCode, setUserCode } = useUserCode();
   const { clearStdin, setInputRequests } = useStdinState();
+  const { clearOutput, setRunning } = useOutput();
   const SelectedVal = selectedLanguageState;
 
   const getDefaultCode = (id: string) =>
@@ -56,6 +58,8 @@ export function CodeLanguageSelector() {
       onSelectionChange={(keys) => {
         const nextKey = getFirstKey(keys);
         const nextLanguage = nextKey ? String(nextKey) : "";
+        clearOutput();
+        setRunning(false);
         setLanguageState({ selectedLanguageState: nextLanguage });
         clearStdin();
         if (!nextLanguage) return;

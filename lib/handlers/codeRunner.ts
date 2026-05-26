@@ -157,6 +157,7 @@ export async function handleRunCode({
   const { stdin: storedStdin } = useStdinState.getState();
   const activeStdin = stdin ?? storedStdin;
 
+  setOutput("");
   setRunning(true);
 
   if (HTML_LANGUAGES.has(selectedLanguage)) {
