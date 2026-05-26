@@ -18,6 +18,23 @@ class RunCodePayload(BaseModel):
     stdin: str | None = None
 
 
+MISSING_INPUT_PATTERNS = (
+    "eoferror: eof when reading a line",
+    "eof when reading a line",
+    "no line found",
+    "nosuchelementexception",
+    "inputmismatchexception",
+)
+
+
+def _needs_stdin(stdin: str | None, stderr: str, message: str) -> bool:
+    if stdin is not None and stdin.strip() != "":
+        return False
+
+    joined = f"{stderr}\n{message}".lower()
+    return any(pattern in joined for pattern in MISSING_INPUT_PATTERNS)
+
+
 @app.get("/")
 async def root():
     client = await asyncio.to_thread(judge0.get_client)
@@ -57,13 +74,23 @@ async def run_code(payload: RunCodePayload):
         language=language_id,
     )
 
+    stderr = executed.stderr or ""
+    message = executed.message or ""
+    needs_input = _needs_stdin(payload.stdin, stderr, message)
+
     return {
         "language_id": language_id,
         "status": str(executed.status) if executed.status else None,
         "stdout": executed.stdout or "",
-        "stderr": executed.stderr or "",
+        "stderr": stderr,
         "compile_output": executed.compile_output or "",
-        "message": executed.message or "",
+        "message": message,
         "time": executed.time,
         "memory": executed.memory,
+        "needs_input": needs_input,
+        "input_prompt": (
+            "Program requires standard input. Enter stdin and run again."
+            if needs_input
+            else ""
+        ),
     }
