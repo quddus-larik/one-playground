@@ -18,23 +18,23 @@ export function OutputViewer() {
         <iframe
           title="Output Preview"
           className="h-full w-full rounded-lg bg-white border-2"
-          sandbox="allow-scripts"
+          sandbox="allow-scripts allow-modals"
           srcDoc={output}
         />
       ) : (
-        <pre className="h-full whitespace-pre-wrap warp-break-words">
+        <pre className="h-full whitespace-pre-wrap break-words">
           {output || "No output yet."}
         </pre>
       )}
 
-      {/* {isRunning && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/80 text-foreground">
+      {isRunning && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-black/50 text-white">
           <div className="flex items-center gap-2">
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/30 border-t-foreground" />
-            <span>Running…</span>
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <span>Running...</span>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 import type { Monaco } from "@monaco-editor/react";
 import { useUserCode } from "@/stores/code.state";
+import { useStdinState } from "@/stores/stdin.state";
+import { detectInputRequests } from "@/lib/utils/inputDetection";
 
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
@@ -42,7 +44,8 @@ interface CodeEditorInterface {
 
 export function CodeEditor({ language = "javascript" }: CodeEditorInterface) {
   const { userCode, setUserCode } = useUserCode();
-  const normalizedLanguage = language.toLowerCase();
+  const { setInputRequests } = useStdinState();
+  const normalizedLanguage = language?.toLowerCase();
   const editorLanguage =
     normalizedLanguage === "react"
       ? "javascript"
@@ -59,7 +62,11 @@ export function CodeEditor({ language = "javascript" }: CodeEditorInterface) {
         theme={PURPLE_THEME_ID}
         beforeMount={definePurpleTheme}
         value={userCode}
-        onChange={(value) => setUserCode({ userCode: value ?? "" })}
+        onChange={(value) => {
+          const nextCode = value ?? "";
+          setUserCode({ userCode: nextCode });
+          setInputRequests(detectInputRequests(nextCode, normalizedLanguage ?? "javascript"));
+        }}
         options={{
           minimap: { enabled: false },
           scrollBeyondLastLine: false,

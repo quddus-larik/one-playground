@@ -7,12 +7,17 @@ import { CodeEditor } from "../custom/editor.minor";
 
 import { useSelectedLanguage } from "@/stores/lang.state";
 import { OutputViewer } from "../custom/output.minor";
+import { languages } from "@/config/site.config";
 
 export function ViewerLayout() {
   const { viewerState } = useViewer();
   const { containerRef, leftWidth, handleMouseDown } = useResizable(50);
 
   const { selectedLanguageState } = useSelectedLanguage();
+  const selectedLanguageLabel =
+    languages.find((lang) => String(lang.id) === (selectedLanguageState || "javascript"))?.label ??
+    selectedLanguageState ??
+    "javascript";
 
   const isBoth = viewerState === "both";
   const isCode = viewerState === "code";
@@ -47,7 +52,7 @@ export function ViewerLayout() {
             <div className="flex items-center justify-between rounded-t-xl bg-muted py-1 pl-2 pr-1 font-mono">
               <span>Output</span>
               <Chip className="rounded-lg font-bold">
-                {selectedLanguageState || "javascript"}
+                {selectedLanguageLabel}
               </Chip>
             </div>
             <div className="h-[calc(100%-32px)]">
@@ -68,7 +73,7 @@ export function ViewerLayout() {
               <div className="flex items-center justify-between rounded-t-xl bg-muted py-1 pl-2 pr-1 font-mono">
                 <span>Output</span>
                 <Chip className="rounded-lg font-bold">
-                  {selectedLanguageState || "javascript"}
+                  {selectedLanguageLabel}
                 </Chip>
               </div>
               <div className="h-[calc(100%-32px)]">
