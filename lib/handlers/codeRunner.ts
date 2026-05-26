@@ -27,6 +27,28 @@ interface RunApiResponse {
   memory?: number | null;
 }
 
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const normalizePromptSequence = (
+  text: string | undefined,
+  promptTitles: string[],
+) => {
+  if (!text || promptTitles.length === 0) return text ?? "";
+
+  let normalized = text;
+  for (let index = 1; index < promptTitles.length; index += 1) {
+    const title = promptTitles[index]?.trim();
+    if (!title) continue;
+
+    // Add a line break before the next prompt if prompts are printed on one line.
+    const pattern = new RegExp(`\\s+(${escapeRegExp(title)})`, "g");
+    normalized = normalized.replace(pattern, "\n$1");
+  }
+
+  return normalized;
+};
+
 const buildHtmlShell = (body: string) => `<!doctype html>
 <html lang="en">
   <head>
@@ -75,8 +97,12 @@ const parseLanguageId = (value: string) => {
 };
 
 const formatRunResult = (result: RunApiResponse) => {
+  const { inputRequests } = useStdinState.getState();
+  const promptTitles = inputRequests.map((item) => item.title);
+  const stdout = normalizePromptSequence(result.stdout, promptTitles);
+
   const parts = [
-    result.stdout?.trim(),
+    stdout.trim(),
     result.stderr?.trim(),
     result.compile_output?.trim(),
     result.message?.trim(),

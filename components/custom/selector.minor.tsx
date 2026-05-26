@@ -5,6 +5,8 @@ import { languages } from "@/config/site.config";
 import { useMemo, useState } from "react";
 import { useSelectedLanguage } from "@/stores/lang.state";
 import { useUserCode } from "@/stores/code.state";
+import { useStdinState } from "@/stores/stdin.state";
+import { detectInputRequests } from "@/lib/utils/inputDetection";
 
 function normalizeSearch(value: unknown) {
   return String(value ?? "")
@@ -27,18 +29,18 @@ export function CodeLanguageSelector() {
   const [search, setSearch] = useState("");
   const { selectedLanguageState, setLanguageState } = useSelectedLanguage();
   const { userCode, setUserCode } = useUserCode();
+  const { clearStdin, setInputRequests } = useStdinState();
   const SelectedVal = selectedLanguageState;
-  const selectedKeys: Key[] = SelectedVal ? [SelectedVal] : [];
 
   const getDefaultCode = (id: string) =>
-    languages.find((lang) => lang.id === id)?.defaultCode ?? "";
+    languages.find((lang) => String(lang.id) === id)?.defaultCode ?? "";
 
   const filteredLang = useMemo(() => {
     const needle = normalizeSearch(search);
     if (!needle) return languages;
 
     return languages.filter(({ id, label }) => {
-      const idMatch = normalizeSearch(id).includes(needle);
+      const idMatch = normalizeSearch(String(id)).includes(needle);
       const labelMatch = normalizeSearch(label).includes(needle);
       return idMatch || labelMatch;
     });
@@ -50,10 +52,12 @@ export function CodeLanguageSelector() {
       className={"w-[124px]"}
       placeholder="languages"
       variant="secondary"
-      onChange={(keys) => {
+      selectedKey={SelectedVal || undefined}
+      onSelectionChange={(keys) => {
         const nextKey = getFirstKey(keys);
         const nextLanguage = nextKey ? String(nextKey) : "";
         setLanguageState({ selectedLanguageState: nextLanguage });
+        clearStdin();
         if (!nextLanguage) return;
 
         const nextDefault = getDefaultCode(nextLanguage);
@@ -63,10 +67,11 @@ export function CodeLanguageSelector() {
 
         if (shouldReplace) {
           setUserCode({ userCode: nextDefault });
+          setInputRequests(detectInputRequests(nextDefault, nextLanguage));
+        } else {
+          setInputRequests(detectInputRequests(userCode ?? "", nextLanguage));
         }
       }}
-      value={selectedLanguageState}
-      defaultValue={selectedLanguageState}
     >
       <Select.Trigger>
         <Select.Value />
@@ -86,8 +91,8 @@ export function CodeLanguageSelector() {
             filteredLang.map(({ id, label }) => (
               <ListBox.Item
                 className="rounded-xl"
-                key={id}
-                id={id}
+                key={String(id)}
+                id={String(id)}
                 textValue={label}
                 aria-label={label}
               >

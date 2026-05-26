@@ -1,3 +1,5 @@
+import type { InputRequestItem } from "@/stores/stdin.state";
+
 const INPUT_REGEX_BY_LANGUAGE: Array<{
   test: (language: string) => boolean;
   regexes: RegExp[];
@@ -30,18 +32,45 @@ const FALLBACK_REGEXES = [
 
 export const NON_BACKEND_LANGUAGES = new Set(["html", "react", "vue"]);
 
-export const detectInputRequests = (code: string, language: string): string[] => {
+const extractPromptTitle = (argExpression: string, fallbackIndex: number) => {
+  const arg = argExpression.trim();
+  if (!arg) return `Input ${fallbackIndex}`;
+
+  const quoteMatch = arg.match(/^["'`](.*)["'`]$/);
+  if (quoteMatch?.[1]) {
+    const cleaned = quoteMatch[1].trim();
+    return cleaned.length > 0 ? cleaned : `Input ${fallbackIndex}`;
+  }
+
+  return `Input ${fallbackIndex}`;
+};
+
+export const detectInputRequests = (
+  code: string,
+  language: string,
+): InputRequestItem[] => {
   const normalizedLanguage = (language || "").toLowerCase();
   const languageConfig = INPUT_REGEX_BY_LANGUAGE.find(({ test }) =>
     test(normalizedLanguage),
   );
   const regexes = languageConfig?.regexes ?? FALLBACK_REGEXES;
 
-  const results: string[] = [];
+  const results: InputRequestItem[] = [];
+  let sequence = 1;
+
   for (const regex of regexes) {
-    const matches = code.match(regex) ?? [];
-    results.push(...matches);
+    const globalRegex = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : `${regex.flags}g`);
+    let match = globalRegex.exec(code);
+    while (match) {
+      const argExpression = match[1] ?? "";
+      results.push({
+        title: extractPromptTitle(argExpression, sequence),
+        input: "",
+      });
+      sequence += 1;
+      match = globalRegex.exec(code);
+    }
   }
 
-  return Array.from(new Set(results));
+  return results;
 };
