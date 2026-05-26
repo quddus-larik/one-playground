@@ -42,7 +42,7 @@ interface CodeEditorInterface {
 
 export function CodeEditor({ language = "javascript" }: CodeEditorInterface) {
   const { userCode, setUserCode } = useUserCode();
-  const normalizedLanguage = language.toLowerCase();
+  const normalizedLanguage = language?.toLowerCase();
   const editorLanguage =
     normalizedLanguage === "react"
       ? "javascript"
