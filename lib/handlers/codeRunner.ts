@@ -11,8 +11,7 @@ interface RunCodeInterface {
 }
 
 const HTML_LANGUAGES = new Set(["html", "react", "vue"]);
-const BACKEND_RUN_URL =
-  process.env.NEXT_PUBLIC_BACKEND_RUN_URL ?? "/api/run";
+const BACKEND_RUN_ROUTE = "/api/run";
 
 interface RunApiResponse {
   language_id?: number;
@@ -128,7 +127,7 @@ const runWithBackend = async ({
   languageId: number;
   stdin?: string;
 }) => {
-  const response = await fetch(BACKEND_RUN_URL, {
+  const response = await fetch(BACKEND_RUN_ROUTE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
