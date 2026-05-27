@@ -6,10 +6,26 @@ from pydantic import BaseModel
 import judge0
 from dotenv import load_dotenv
 
+from fastapi.middleware.cors import CORSMiddleware
+
 load_dotenv()
 app = FastAPI()
 
 URL = os.getenv("SITE_URL", "http://localhost:3000")
+
+allowed_origins = [
+    URL,  # replace with your specific site
+    # you can add more if needed, e.g.
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,        # specific site(s) only
+    allow_credentials=False,               # needed if using cookies/auth
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 
 
 class RunCodePayload(BaseModel):
