@@ -196,7 +196,7 @@ export async function handleRunCode({
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     setOutput(
-      `Execution failed. Make sure backend is running at ${BACKEND_RUN_URL}\n${message}`,
+      `Execution failed. Make sure backend is running at ${"/api/run"}\n${message}`,
     );
   } finally {
     setRunning(false);
