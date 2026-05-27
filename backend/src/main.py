@@ -26,8 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 class RunCodePayload(BaseModel):
     source_code: str
     language_id: int | None = None
@@ -72,6 +70,7 @@ async def root():
     }
 
 
+@app.post("/")
 @app.post("/run")
 async def run_code(payload: RunCodePayload):
     client = await asyncio.to_thread(judge0.get_client)
